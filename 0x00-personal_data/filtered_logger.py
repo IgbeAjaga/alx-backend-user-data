@@ -16,7 +16,9 @@ patterns = {
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
-def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:
+def filter_datum(
+        fields: List[str], redaction: str, message: str,
+        separator: str) -> str:
     """Filters a log line."""
     extract, replace = (patterns["extract"], patterns["replace"])
     return re.sub(extract(fields, separator), replace(redaction), message)
@@ -51,14 +53,17 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
 def main():
     """Logs the information about user records in a table."""
-    fields = ["name", "email", "phone", "ssn", "password", "ip", "last_login", "user_agent"]
+    fields = [
+            "name", "email", "phone", "ssn", "password", "ip",
+            "last_login", "user_agent"]
     info_logger = get_logger()
     connection = get_db()
     with connection.cursor() as cursor:
         cursor.execute("SELECT {} FROM users;".format(','.join(fields)))
         rows = cursor.fetchall()
         for row in rows:
-            record = '; '.join('{}={}'.format(col, val) for col, val in zip(fields, row))
+            record = '; '.join('{}={}'.format(col, val) for col, val in zip(
+                fields, row))
             msg = '{};'.format(record)
             args = ("user_data", logging.INFO, None, None, msg, None, None)
             log_record = logging.LogRecord(*args)
@@ -67,7 +72,6 @@ def main():
 
 class RedactingFormatter(logging.Formatter):
     """Redacting Formatter class."""
-    
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     FORMAT_FIELDS = ('name', 'levelname', 'asctime', 'message')
