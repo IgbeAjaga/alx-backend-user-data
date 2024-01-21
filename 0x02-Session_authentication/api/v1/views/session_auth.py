@@ -1,23 +1,19 @@
 #!/usr/bin/env python3
-"""Module containing views for session authentication.
+"""Module of session authenticating views.
 """
-
+import os
 from typing import Tuple
 from flask import abort, jsonify, request
-import os
 
 from models.user import User
 from api.v1.views import app_views
-from api.v1.app import auth
 
 
-@app_views.route(
-        '/auth_session/login', methods=['POST'], strict_slashes=False)
+@app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
 def login() -> Tuple[str, int]:
-    """Handle POST request to /api/v1/auth_session/login.
-
-    Returns:
-        Tuple[str, int]: JSON representation of a User object and status code.
+    """POST /api/v1/auth_session/login
+    Return:
+      - JSON representation of a User object.
     """
     not_found_res = {"error": "no user found for this email"}
     email = request.form.get('email')
@@ -33,21 +29,21 @@ def login() -> Tuple[str, int]:
     if len(users) <= 0:
         return jsonify(not_found_res), 404
     if users[0].is_valid_password(password):
-        session_id = auth.create_session(getattr(users[0], 'id'))
+        from api.v1.app import auth
+        sessiond_id = auth.create_session(getattr(users[0], 'id'))
         res = jsonify(users[0].to_json())
-        res.set_cookie(os.getenv("SESSION_NAME"), session_id)
+        res.set_cookie(os.getenv("SESSION_NAME"), sessiond_id)
         return res
     return jsonify({"error": "wrong password"}), 401
 
-
 @app_views.route(
-        '/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+    '/auth_session/logout', methods=['DELETE'], strict_slashes=False)
 def logout() -> Tuple[str, int]:
-    """Handle DELETE request to /api/v1/auth_session/logout.
-
-    Returns:
-        Tuple[str, int]: An empty JSON object and status code.
+    """DELETE /api/v1/auth_session/logout
+    Return:
+      - An empty JSON object.
     """
+    from api.v1.app import auth
     is_destroyed = auth.destroy_session(request)
     if not is_destroyed:
         abort(404)
