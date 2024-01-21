@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 
 from .session_auth import SessionAuth
 
+
 class SessionExpAuth(SessionAuth):
     """Session authentication class with expiration.
     """
