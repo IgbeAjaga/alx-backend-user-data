@@ -4,11 +4,15 @@
 
 from typing import Tuple
 from flask import abort, jsonify, request
+import os
 
 from models.user import User
 from api.v1.views import app_views
+from api.v1.app import auth
 
-@app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
+
+@app_views.route(
+        '/auth_session/login', methods=['POST'], strict_slashes=False)
 def login() -> Tuple[str, int]:
     """Handle POST request to /api/v1/auth_session/login.
 
@@ -29,21 +33,21 @@ def login() -> Tuple[str, int]:
     if len(users) <= 0:
         return jsonify(not_found_res), 404
     if users[0].is_valid_password(password):
-        from api.v1.app import auth
         session_id = auth.create_session(getattr(users[0], 'id'))
         res = jsonify(users[0].to_json())
         res.set_cookie(os.getenv("SESSION_NAME"), session_id)
         return res
     return jsonify({"error": "wrong password"}), 401
 
-@app_views.route('/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+
+@app_views.route(
+        '/auth_session/logout', methods=['DELETE'], strict_slashes=False)
 def logout() -> Tuple[str, int]:
     """Handle DELETE request to /api/v1/auth_session/logout.
 
     Returns:
         Tuple[str, int]: An empty JSON object and status code.
     """
-    from api.v1.app import auth
     is_destroyed = auth.destroy_session(request)
     if not is_destroyed:
         abort(404)
