@@ -9,6 +9,7 @@ from flask import request
 class Auth:
     """Authentication class.
     """
+
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """Checks if a path requires authentication.
         """
@@ -35,4 +36,12 @@ class Auth:
     def current_user(self, request=None) -> TypeVar('User'):
         """Gets the current user from the request.
         """
+        return None
+
+    def session_cookie(self, request=None) -> str:
+        """Gets the session cookie value from the request.
+        """
+        if request is not None:
+            session_name = request.environ.get('SESSION_NAME', '_my_session_id')
+            return request.cookies.get(session_name, None)
         return None
