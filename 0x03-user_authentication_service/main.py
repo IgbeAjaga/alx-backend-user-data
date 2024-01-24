@@ -64,7 +64,7 @@ def log_in(email: str, password: str) -> str:
 
 def profile_unlogged() -> None:
     """
-    Attempts to access the user profile without logging in and validates the expected response.
+    Attempts to access the user profile without logging in and validates
 
     Returns:
         None
@@ -77,7 +77,7 @@ def profile_unlogged() -> None:
 
 def profile_logged(session_id: str) -> None:
     """
-    Accesses the user profile after logging in and validates the expected response.
+    Accesses the user profile after logging in
 
     Args:
         session_id (str): Session ID obtained after successful login.
@@ -111,7 +111,7 @@ def log_out(session_id: str) -> None:
 
 def reset_password_token(email: str) -> str:
     """
-    Requests a password reset token by making a POST request to the /reset_password endpoint.
+    Requests a password reset token by making a POST request.
 
     Args:
         email (str): Email address of the user.
@@ -140,7 +140,11 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
         None
     """
     url = f"{BASE_URL}/reset_password"
-    data = {"email": email, "reset_token": reset_token, "new_password": new_password}
+    data = {
+            "email": email,
+            "reset_token": reset_token,
+            "new_password": new_password
+            }
     response = requests.put(url, data=data)
     assert response.status_code == 200
     print("Password updated successfully.")
