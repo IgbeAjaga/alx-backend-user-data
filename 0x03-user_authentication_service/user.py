@@ -3,6 +3,7 @@
 User model for the authentication service.
 """
 
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
