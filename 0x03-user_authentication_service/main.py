@@ -6,6 +6,7 @@ import requests
 
 BASE_URL = "http://127.0.0.1:5000"
 
+
 def register_user(email: str, password: str) -> None:
     """
     Registers a user by making a POST request to the /users endpoint.
@@ -23,6 +24,7 @@ def register_user(email: str, password: str) -> None:
     assert response.status_code == 200
     print("User registered successfully.")
 
+
 def log_in_wrong_password(email: str, password: str) -> None:
     """
     Attempts to log in with wrong password and validates the expected response
@@ -39,6 +41,7 @@ def log_in_wrong_password(email: str, password: str) -> None:
     response = requests.post(url, data=data)
     assert response.status_code == 401
     print("Login with wrong password failed as expected.")
+
 
 def log_in(email: str, password: str) -> str:
     """
@@ -58,6 +61,7 @@ def log_in(email: str, password: str) -> str:
     print("Login successful.")
     return response.cookies.get("session_id")
 
+
 def profile_unlogged() -> None:
     """
     Attempts to access the user profile without logging in and validates the expected response.
@@ -69,6 +73,7 @@ def profile_unlogged() -> None:
     response = requests.get(url)
     assert response.status_code == 403
     print("Profile access without login failed as expected.")
+
 
 def profile_logged(session_id: str) -> None:
     """
@@ -86,6 +91,7 @@ def profile_logged(session_id: str) -> None:
     assert response.status_code == 200
     print("Profile access with login successful.")
 
+
 def log_out(session_id: str) -> None:
     """
     Logs out a user by making a DELETE request to the /sessions endpoint.
@@ -101,6 +107,7 @@ def log_out(session_id: str) -> None:
     response = requests.delete(url, cookies=cookies)
     assert response.status_code == 200
     print("Logout successful.")
+
 
 def reset_password_token(email: str) -> str:
     """
@@ -119,6 +126,7 @@ def reset_password_token(email: str) -> str:
     print("Password reset token generated.")
     return response.json()["reset_token"]
 
+
 def update_password(email: str, reset_token: str, new_password: str) -> None:
     """
     Updates the user's password using a reset token by making a PUT request
@@ -136,6 +144,7 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
     response = requests.put(url, data=data)
     assert response.status_code == 200
     print("Password updated successfully.")
+
 
 EMAIL = "guillaume@holberton.io"
 PASSWD = "b4l0u"
